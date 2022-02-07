@@ -1,0 +1,35 @@
+body{
+	font-family: Verdana;
+	color: #555555;
+}
+
+input, select, textarea{
+	width: 100%;
+}
+/* 18. Change the width of the submit button to 100px, padding to 10px and background color to #d3d3d3 */
+button{
+	width: 100px;
+	background-color: #d3d3d3;
+	padding: 10px; 
+}
+
+p{
+	width: 80%;
+	margin: auto;
+}
+/* Add a 15px space between each form input (use padding-bottom)*/
+.form-group{
+	padding-bottom: 15px;
+}
+/* 16. Change the width of all the input to 100% (include textarea and select as well)*/
+/* 17. Add a 20px padding around the form, center it and change the width to 80%*/
+.my-form{
+	padding: 20px;
+	width: 50%;
+	margin: auto;
+}
+.first-row-buttons {
+	padding-bottom: 20px;
+	width: 50%;
+	margin: auto;
+}

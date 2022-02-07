@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mini Banking System</title>
+	<link rel="stylesheet" type="text/css" href="jsAssignment3.css">
+</head>
+<body>
+	<h1>Elevate Bank</h1>
+	<!-- Create before the exercise -->
+	<div class="my-form" id="myForm">
+		<form>
+			<div class="form-group">
+		    	<label>Amount $</label>
+		    	<input type="number" id="amount" name="amount">
+	    	</div>
+            <div class="form-group">
+		    	<label>Account</label>
+		    	<select id="account" name="account">
+		    		<option value="chequing">Chequing</option>
+		    		<option value="savings">Savings</option>
+		    		<option value="resp">RESP</option>
+		    		<option value="rrsp">RRSP</option>
+		    	</select>
+		    </div>
+
+		    <div class="form-group">
+		    	<label>Transfer account</label>
+		    	<select id="transferaccount" name="account">
+		    		<option value="chequing">Chequing</option>
+		    		<option value="savings">Savings</option>
+		    		<option value="resp">RESP</option>
+		    		<option value="rrsp">RRSP</option>
+		    	</select>
+	   	 	</div>
+		</form>
+	</div>
+	<div class="first-row-buttons">
+		<button type="button" onclick="showBalance()">Balances</button>
+    	<button type="button" onclick="deposit()">Deposit</button>
+    	<button type="button" onclick="withdraw()">Withdraw</button>
+    	<button type="button" onclick="showForecast()">Forecast</button>
+    	<button type="button" onclick="transfer()">Transfer</button>
+	</div>
+	<p id="balanceMessage"></p>
+	<script>
+
+		"use strict"
+		let chequingBalance = 800;
+		let savingsBalance = 1000;
+		let respBalance = 1600;
+		let rrspBalance = 1000;
+		let respReturnRate = 4.4; //percentage of growth each year for resp account
+		let rrspReturnRate = 6; //percent of growth each year for rrsp account
+
+		function showBalance() {
+			/*Question 1: Add code to show the balances of each account.*/
+			let inputAccount = document.getElementById("account").value;
+			
+
+			if (inputAccount == "chequing") {
+				document.getElementById("balanceMessage").innerHTML = "The balance of " + inputAccount + " account is: $" + chequingBalance;
+			} else if (inputAccount == "savings") {
+				document.getElementById("balanceMessage").innerHTML = "The balance of " + inputAccount + " account is: $" + savingsBalance;
+			} else if (inputAccount == "resp") {
+				document.getElementById("balanceMessage").innerHTML = "The balance of " + inputAccount + " account is: $" + respBalance;
+			} else {
+				document.getElementById("balanceMessage").innerHTML = "The balance of " + inputAccount + " account is: $" + rrspBalance;
+			}
+
+		}
+
+		function deposit() { //determines which account to deposit into and calls the function that calculates new balance
+			let inputAccount = document.getElementById("account").value;
+			let newBalanceMessage;
+			if (inputAccount == "chequing") {
+				newBalanceMessage = depositInChequing(document.getElementById("amount").value);
+			} else if (inputAccount == "savings") {
+				newBalanceMessage = depositInSavings(document.getElementById("amount").value);
+			} else if (inputAccount == "resp") {
+				newBalanceMessage = depositInRESP(document.getElementById("amount").value);
+			} else {
+				newBalanceMessage = depositInRRSP(document.getElementById("amount").value);
+			}
+			document.getElementById("balanceMessage").innerHTML = newBalanceMessage;
+		}
+
+		function withdraw() {
+		let inputAccount = document.getElementById("account").value;
+			let newBalanceMessage;
+			if (inputAccount == "chequing") {
+				newBalanceMessage = withdrawFromChequing(document.getElementById("amount").value);
+			} else if (inputAccount == "savings") {
+				newBalanceMessage = withdrawFromSavings(document.getElementById("amount").value);
+			} else if (inputAccount == "resp") {
+				newBalanceMessage = withdrawFromRESP(document.getElementById("amount").value);
+			} else {
+				newBalanceMessage = withdrawFromRRSP(document.getElementById("amount").value);
+			}
+			document.getElementById("balanceMessage").innerHTML = newBalanceMessage;
+		
+
+		}
+
+		function showForecast() {
+			let inputAccount = document.getElementById("account").value;
+			let newBalanceMessage;
+			if (inputAccount == "chequing" || inputAccount == "savings") {
+				newBalanceMessage = "We do not provide investment forecasts for that account."
+			} else if (inputAccount == "resp") {
+				newBalanceMessage = forecastRESP();
+			} else {
+				newBalanceMessage = forecastRRSP();
+			}
+			document.getElementById("balanceMessage").innerHTML = newBalanceMessage;
+		}
+
+		function transfer() {
+			let inputAccount = document.getElementById("account").value;
+			let newBalanceMessage;
+			if (inputAccount == "resp" || inputAccount == "rrsp") {
+				newBalanceMessage = "We do not provide transfers for that account."
+			} else if (inputAccount == "chequing") {
+				newBalanceMessage = transferfromchequing(document.getElementById("transferaccount").value);
+			} else { //savings
+				newBalanceMessage = transferfromsavings(document.getElementById("transferaccount").value);
+			}
+			document.getElementById("balanceMessage").innerHTML = newBalanceMessage;
+		}
+
+
+		function depositInChequing(amountToDeposit) {
+			chequingBalance = chequingBalance + Number(amountToDeposit);
+			return "The new chequing balance: $" + chequingBalance.toFixed(2);
+		}
+
+		//adds funds to the savings account
+		function depositInSavings(amountToDeposit) {
+			savingsBalance = savingsBalance + Number(amountToDeposit);
+			return "The new savings balance: $" + savingsBalance.toFixed(2);
+		}
+
+		//adds funds to the resp account
+		function depositInRESP(amountToDeposit) {
+			respBalance = respBalance + Number(amountToDeposit);
+			return "The new RESP balance: $" + respBalance.toFixed(2);
+		}
+
+		//adds funds to the rrsp account
+		function depositInRRSP(amountToDeposit) {
+			rrspBalance = rrspBalance + Number(amountToDeposit);
+			return "The new RRSP balance: $" + rrspBalance.toFixed(2);
+		}
+
+		function withdrawFromChequing(amountToWithdraw) {
+			chequingBalance = chequingBalance - Number(amountToWithdraw);
+			return "The new chequing balance: $" + chequingBalance.toFixed(2);
+		}
+
+		function withdrawFromSavings(amountToWithdraw) {
+			savingsBalance = savingsBalance - Number(amountToWithdraw);
+			return "The new savings balance: $" + savingsBalance.toFixed(2);
+		}
+
+		function withdrawFromRESP(amountToWithdraw) {
+			let respmessage;
+
+			if(confirm("Press 'OK' confirm that you want to withdraw from this account.")) {
+				respBalance = respBalance - Number(amountToWithdraw);
+				return "Your confrimed the transaction! <br> The new RESP balance: $" + respBalance.toFixed(2);
+			} else {
+			return "You cancelled the transaction! <br> No furthur action will be taken.";
+		}
+		}
+
+		function withdrawFromRRSP(amountToWithdraw) {
+			
+			return "You cannot take out $" + Number(amountToWithdraw).toFixed(2) + " from this account until you buy a house of retire.";
+		}
+
+		function forecastRESP() {
+			var yearsinput = prompt("How many years would you like to forecast?");
+			if (isNaN(yearsinput) || yearsinput === null || yearsinput === ""){ // makes sure it is a number and not null
+				alert("Enter a valid digit in order to continue!");
+				return "Invalid input"
+			} else {
+				var forecastedresp = respBalance.toFixed(2);
+				forecastedresp = parseInt(forecastedresp);
+				var yearsinputloop = parseInt(yearsinput);
+				var yearscounter = 1;
+				var finalresplist = [];
+				while (yearsinputloop !== 0){
+
+					forecastedresp = forecastedresp*1.044
+					forecastedresp = Number(forecastedresp);
+					forecastedresp = forecastedresp.toFixed(2);
+					
+					finalresplist.push("After year " + yearscounter +", your forcast for RESP account is: $" + forecastedresp + " (increased by 4.4%) <br>");
+
+					yearscounter++;
+					yearsinputloop--;
+				}
+			return finalresplist.join("");
+			}
+			
+		}
+
+		function forecastRRSP() {
+			/*Question 4*/
+
+			var yearsinput = prompt("How many years would you like to forecast?");
+			if (isNaN(yearsinput) || yearsinput === null || yearsinput === ""){ // makes sure it is a number
+				alert("Enter a valid digit in order to continue!");
+				return "Invalid input"
+			} else {
+				var forecastedresp = rrspBalance.toFixed(2);
+				forecastedresp = parseInt(forecastedresp);
+				var yearsinputloop = parseInt(yearsinput);
+				var yearscounter = 1;
+				var finalresplist = [];
+				while (yearsinputloop !== 0){
+
+					forecastedresp = forecastedresp*1.06
+					forecastedresp = Number(forecastedresp);
+					forecastedresp = forecastedresp.toFixed(2);
+					
+					finalresplist.push("After year " + yearscounter +", your forcast for RESP account is: $" + forecastedresp + " (increased by 6%) <br>");
+
+					yearscounter++;
+					yearsinputloop--;
+				}
+			return finalresplist.join("");
+			}
+		}
+
+
+		function transferfromsavings(transferto){
+			var transferammount = prompt("how much do you want to transfer? (Digits only!)");
+			if (isNaN(transferammount) || transferammount === null || transferammount === ""){
+				alert("Enter a valid digit in order to continue!");
+				return "Invalid input"
+			} else{
+				Number(transferammount);
+
+				if(transferto === "savings"){
+					return "Error transfering to the same account!";
+
+				} else if(transferto === "chequing"){
+					savingsBalance = savingsBalance - transferammount;
+					chequingBalance = Number(chequingBalance) + Number(transferammount);
+
+					return "Transfer successfully completed! <br> The new Savings Balance is: $" + savingsBalance + "<br> The new Chequing Balance is: $" + chequingBalance;
+	
+				} else if(transferto === "resp"){
+					savingsBalance = savingsBalance - transferammount;
+					respBalance = Number(respBalance) + Number(transferammount);
+
+					return "Transfer successfully completed! <br> The new Savings Balance is: $" + savingsBalance + "<br> The new RESP Balance is: $" + respBalance;
+
+				} else{
+					savingsBalance = savingsBalance - transferammount;
+					rrspBalance = Number(rrspBalance) + Number(transferammount);
+
+					return "Transfer successfully completed! <br> The new Savings Balance is: $" + savingsBalance + "<br> The new RESP Balance is: $" + rrspBalance;
+
+				}
+
+			}
+
+		}
+
+		function transferfromchequing(transferto){
+			var transferammount = prompt("how much do you want to transfer?");
+			if (isNaN(transferammount) || transferammount === null || transferammount === ""){
+				alert("Enter a valid digit in order to continue!");
+				return "Invalid input"
+			} else{
+				Number(transferammount);
+
+				if(transferto === "chequing"){
+					return "Error transfering to the same account!";
+
+				} else if(transferto === "savings"){
+					chequingBalance = chequingBalance - transferammount;
+					savingsBalance = Number(savingsBalance) + Number(transferammount);
+
+					return "Transfer successfully completed! <br> The new Chequing Balance is: $" + chequingBalance + "<br> The new Savings Balance is: $" + savingsBalance;
+
+				} else if(transferto === "resp"){
+					chequingBalance = chequingBalance - transferammount;
+					respBalance = Number(respBalance) + Number(transferammount);
+
+					return "Transfer successfully completed! <br> The new Chequing Balance is: $" + chequingBalance + "<br> The new RESP Balance is: $" + respBalance;
+
+				} else{
+
+					chequingBalance = chequingBalance - transferammount;
+					rrspBalance = Number(rrspBalance) + Number(transferammount);
+
+					return "Transfer successfully completed! <br> The new Chequing Balance is: $" + chequingBalance + "<br> The new RRSP Balance is: $" + rrspBalance;
+				}
+			}
+
+		}
+
+
+	</script>
+
+</body>
+</html>
